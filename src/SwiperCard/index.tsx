@@ -4,6 +4,8 @@ import React, {
   useCallback,
   useImperativeHandle,
   type PropsWithChildren,
+  useMemo,
+  useState,
 } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -16,6 +18,7 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  useAnimatedReaction,
 } from 'react-native-reanimated';
 import type { SwiperCardOptions, SwiperCardRefType } from 'rn-swiper-list';
 
@@ -67,14 +70,29 @@ const SwipeableCard = forwardRef<
     },
     ref
   ) => {
+    const [activeIndexState, setActiveIndexState] = useState(Math.floor(activeIndex.value));
+
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
     const currentActiveIndex = useSharedValue(Math.floor(activeIndex.value));
     const nextActiveIndex = useSharedValue(Math.floor(activeIndex.value));
 
+    useAnimatedReaction(
+      () => activeIndex.value,
+      (currentValue, previousValue) => {
+        if (currentValue !== previousValue) {
+          runOnJS(setActiveIndexState)(Math.floor(currentValue));
+        }
+      }
+    );
+
     const { width, height } = useWindowDimensions();
     const maxCardTranslation = width * 1.5;
     const maxCardTranslationY = height * 1.5;
+
+    const isVisible = useMemo(() => {
+      return index >= activeIndexState - 2 && index <= activeIndexState + 2;
+    }, [index, activeIndexState]);
 
     const swipeRight = useCallback(() => {
       onSwipeRight?.(index);
@@ -255,15 +273,12 @@ const SwipeableCard = forwardRef<
       });
 
     const rCardStyle = useAnimatedStyle(() => {
-      const opacity = withTiming(index - activeIndex.value < 5 ? 1 : 0);
       const scale = withTiming(1 - 0.07 * (index - activeIndex.value));
       return {
-        opacity,
         position: 'absolute',
         zIndex: -index,
         transform: [
           { rotate: `${rotateX.value}rad` },
-
           { scale: scale },
           {
             translateX: translateX.value,
@@ -274,6 +289,10 @@ const SwipeableCard = forwardRef<
         ],
       };
     });
+
+    if (!isVisible) {
+      return null;
+    }
 
     return (
       <GestureDetector gesture={gesture}>
