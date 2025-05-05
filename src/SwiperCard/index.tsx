@@ -20,7 +20,7 @@ import Animated, {
   withTiming,
   useAnimatedReaction,
 } from 'react-native-reanimated';
-import type { SwiperCardOptions, SwiperCardRefType } from 'rn-swiper-list';
+import type { SwiperCardOptions, SwiperCardRefType } from 'discify-bio-rn-swiper-list';
 
 import OverlayLabel from './OverlayLabel';
 

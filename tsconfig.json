@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "rn-swiper-list": ["./src/index"]
+      "discify-bio-rn-swiper-list": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
