@@ -6,6 +6,7 @@ import React, {
   type PropsWithChildren,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -70,12 +71,18 @@ const SwipeableCard = forwardRef<
     },
     ref
   ) => {
-    const [activeIndexState, setActiveIndexState] = useState(Math.floor(activeIndex.value));
-
+    const [activeIndexState, setActiveIndexState] = useState(0);
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
-    const currentActiveIndex = useSharedValue(Math.floor(activeIndex.value));
-    const nextActiveIndex = useSharedValue(Math.floor(activeIndex.value));
+    const currentActiveIndex = useSharedValue(0);
+    const nextActiveIndex = useSharedValue(0);
+
+    useEffect(() => {
+      const initialActiveIndex = Math.floor(activeIndex.value)
+      setActiveIndexState(initialActiveIndex)
+      currentActiveIndex.value = initialActiveIndex
+      nextActiveIndex.value = initialActiveIndex
+    }, [])
 
     useAnimatedReaction(
       () => activeIndex.value,
