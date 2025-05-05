@@ -4,6 +4,7 @@
   "description": "⚡ Lightning fast and customizable tinder-like swipe card for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
+  "private": false,
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
