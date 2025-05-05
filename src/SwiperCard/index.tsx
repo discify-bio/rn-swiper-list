@@ -134,14 +134,19 @@ const SwipeableCard = forwardRef<
     const swipeBack = useCallback(() => {
       cancelAnimation(translateX);
       cancelAnimation(translateY);
-      translateX.value = withSpring(0, swipeBackXSpringConfig);
-      translateY.value = withSpring(0, swipeBackYSpringConfig);
-    }, [
-      translateX,
-      translateY,
-      swipeBackXSpringConfig,
-      swipeBackYSpringConfig,
-    ]);
+      
+      const springConfig = {
+        damping: 18,
+        stiffness: 50,
+        mass: 1,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.001,
+        restSpeedThreshold: 0.001,
+      };
+      
+      translateX.value = withSpring(0, springConfig);
+      translateY.value = withSpring(0, springConfig);
+    }, [translateX, translateY]);
 
     useImperativeHandle(
       ref,
@@ -255,24 +260,40 @@ const SwipeableCard = forwardRef<
       });
 
     const rCardStyle = useAnimatedStyle(() => {
-      const opacity = withTiming(index - activeIndex.value < 5 ? 1 : 0);
-      const scale = withTiming(1 - 0.07 * (index - activeIndex.value));
+      const isCurrentCard = index === Math.floor(activeIndex.value)
+      
+      const isPreviousCard = index === Math.floor(activeIndex.value - 1)
+      
+      const isMoving = translateX.value !== 0 || translateY.value !== 0
+      
+      const opacity = withTiming(
+        index - activeIndex.value < 5 ? 1 : 0,
+        { duration: 300 }
+      )
+      
+      const scale = withTiming(1 - 0.07 * Math.max(0, index - activeIndex.value), { duration: 300 })
+      
+      let zIndexValue = -index
+      
+      if (isMoving) {
+        zIndexValue = 20
+      } else if (isCurrentCard) {
+        zIndexValue = 10
+      } else if (isPreviousCard) {
+        zIndexValue = 5
+      }
+      
       return {
         opacity,
         position: 'absolute',
-        zIndex: -index,
+        zIndex: zIndexValue,
         transform: [
           { rotate: `${rotateX.value}rad` },
-
           { scale: scale },
-          {
-            translateX: translateX.value,
-          },
-          {
-            translateY: translateY.value,
-          },
+          { translateX: translateX.value },
+          { translateY: translateY.value },
         ],
-      };
+      }
     });
 
     return (

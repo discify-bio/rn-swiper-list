@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.example"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,5 +27,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
+  },
+  "ios": {
+    "bundleIdentifier": "com.example.example"
+  },
+  "android": {
+    "package": "com.example.example"
   }
 }
