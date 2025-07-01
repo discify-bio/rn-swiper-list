@@ -20,6 +20,11 @@ export type SwiperOptions<T> = {
   renderCard: (item: T, index: number) => JSX.Element;
   cardStyle?: StyleProp<ViewStyle>;
   loop?: boolean;
+  //* Chunking options
+  useChunks?: boolean;
+  chunkSize?: number;
+  preloadChunks?: number;
+  onChunkChange?: (chunkIndex: number) => void;
   //* Event callbacks
   onSwipeLeft?: (cardIndex: number) => void;
   onSwipeRight?: (cardIndex: number) => void;

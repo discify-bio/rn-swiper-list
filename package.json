@@ -1,6 +1,6 @@
 {
   "name": "discify-bio-rn-swiper-list",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "⚡ Lightning fast and customizable tinder-like swipe card for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
